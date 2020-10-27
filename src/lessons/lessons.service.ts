@@ -89,8 +89,8 @@ export class LessonsService {
       lesson.content.videos.push(videoId);
       return lesson.save();
 
-      // Можно еще так пушить в коллекцию монги
-      // Мне ближе через push делать
+      // TODO: Можно еще так пушить в коллекцию монги,
+      //  Мне ближе через push делать
 
       /*this.findOneWithoutPopulate.update(
           { _id: id },

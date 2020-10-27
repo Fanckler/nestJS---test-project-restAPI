@@ -56,7 +56,7 @@ export class LogoutController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Разлогинить пользователя", description: "Эндпоинт используется для разлогина пользователя. В случае успешной операции необходимо удалить идентификатор токена из кук клиента, а также очистить токен из хранилища." })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Post('')
+  @Post()
   async logout(@Res() res) {
     res.cookie('token', null);
     res.send({

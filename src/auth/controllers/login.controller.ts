@@ -62,8 +62,8 @@ export class LoginController {
   @Public()
   @ApiOperation({ summary: "Залогинить пользователя", description: "Эндпоинт используется для логина пользователя. После успешного логина необходимо в куки клиента записать идентификатор токена, который будет автоматически подкладываться во все последующие запросы."})
   @ApiImplicitParam({name:"auth", description: "base64 string concatenated email + : + password", schema: { type: "string", example: 'Base ewoJImVtYWlsIjogImpkb2VAZXhhbXBsZS5jb20iLAoJInBhc3MiOiAiYWIxMjM0NUNkIgp9'}, required: true, type: "string"})
-  @ApiResponse({ status: HttpStatus.OK, description: 'Успех: Отсутствует тело ответа'})
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Успех: Отсутствует тело ответа'})
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post()
   async login(@Req() {headers} , @Res() res) {
     const token = await this.authService.validateUser(headers);

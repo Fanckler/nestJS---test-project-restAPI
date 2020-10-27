@@ -1,59 +1,64 @@
-/*
-  coffees-service.spec.ts - FINAL CODE
-*/
-import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
+import { ClassesController } from './classes.controller';
 import { ClassesService } from './classes.service';
+import { Class } from './entities/class.entity';
+import { Model } from "mongoose";
 
-type MockRepository<T = any> = Partial<any>;
-const createMockRepository = <T = any>(): MockRepository<T> => ({
-  findOne: jest.fn(),
-  create: jest.fn(),
-});
+describe('Classes Controller', () => {
+  let classesController: ClassesController;
+  let classesService: ClassesService;
+  const classesModel:any = Model<Class>
 
-describe('CoffeesService', () => {
-  let service: ClassesService;
-  let classesRepository: MockRepository;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ClassesService,
-      ],
-    }).compile();
-
-    service = module.get<ClassesService>(ClassesService);
-    classesRepository = module.get<MockRepository>(getRepositoryToken(Coffee));
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  beforeEach(() => {
+    classesService = new ClassesService(classesModel);
+    classesController = new ClassesController(classesService);
   });
 
   describe('findOne', () => {
-    describe('when coffee with ID exists', () => {
-      it('should return the coffee object', async () => {
-        const coffeeId = '1';
-        const expectedCoffee = {};
-
-        coffeeRepository.findOne.mockReturnValue(expectedCoffee);
-        const coffee = await service.findOne(coffeeId);
-        expect(coffee).toEqual(expectedCoffee);
-      });
-    });
-    describe('otherwise', () => {
-      it('should throw the "NotFoundException"', async (done) => {
-        const coffeeId = '1';
-        coffeeRepository.findOne.mockReturnValue(undefined);
-
-        try {
-          await service.findOne(coffeeId);
-          done();
-        } catch (err) {
-          expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual(`Coffee #${coffeeId} not found`);
+    it('should return class', async () => {
+      const result: any = {
+        "data": {
+          "duration": {
+            "started": "2019-06-19T07:44:06.353Z",
+            "closed": "2019-06-19T07:44:06.353Z"
+          },
+          "_id": "5f91606311d324a5c67fc4fc",
+          "title": "Backend nestjs :)",
+          "description": "Backend Online Class",
+          "order": 2,
+          "created": "2020-10-22T10:35:15.000",
+          "lessons": [],
+          "students": [],
+          "modified": "2020-10-23T13:04:03.792Z"
         }
-      });
+      };
+      jest.spyOn(classesService, 'findOne').mockImplementation(() => result);
+
+      expect(await classesController.findOne('5f91606311d324a5c67fc')).toBe(result);
     });
   });
+
+  describe('findAll', () => {
+    it('should return an array of classes', async () => {
+      const data: any = [
+        {
+          "duration": {
+            "started": "2019-06-19T07:44:06.353Z",
+            "closed": "2019-06-19T07:44:06.353Z"
+          },
+          "_id": "5f91606311d324a5c67fc4fc",
+          "title": "Backend nestjs :)",
+          "description": "Backend Online Class",
+          "order": 2,
+          "created": "2020-10-22T10:35:15.000",
+          "lessons": [],
+          "students": [],
+          "modified": "2020-10-23T13:04:03.792Z"
+        }
+      ]
+      jest.spyOn(classesService, 'findAll').mockImplementation(() => data);
+
+      expect(await classesController.findAll({limit: 2, page: 1})).toBe(data);
+    });
+  });
+
 });
